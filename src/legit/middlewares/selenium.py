@@ -1,6 +1,7 @@
 """This module contains the ``SeleniumMiddleware`` scrapy middleware"""
 
 from importlib import import_module
+from typing import List
 
 from scrapy import signals
 from scrapy.exceptions import NotConfigured
@@ -14,8 +15,8 @@ from .http import SeleniumRequest
 class SeleniumMiddleware:
     """Scrapy middleware handling the requests using selenium"""
 
-    def __init__(self, driver_name, driver_executable_path,
-        browser_executable_path, command_executor, driver_arguments):
+    def __init__(self, driver_name: str, driver_executable_path: str,
+        browser_executable_path: str, command_executor: str, driver_arguments: List[str]):
         """Initialize the selenium webdriver
 
         Parameters

@@ -5,10 +5,9 @@ from typing import Optional
 
 @dataclass
 class LegitNGArticle:
-    docid: str
     url: str
     headline: str
-    content: Optional[str]
+    content: str
     category: Optional[str] = None
 
     @property
@@ -16,4 +15,5 @@ class LegitNGArticle:
         return deepcopy(vars(self))
 
     def __repr__(self) -> str:
-        return f"{self.__class__.__name__}(headline={self.headline}, url={self.url}, articleid={self.docid or None})"
+        return f"{self.__class__.__name__}(headline={self.headline}, url={self.url}, category={self.category})"
+    

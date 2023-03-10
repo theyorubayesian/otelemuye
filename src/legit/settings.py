@@ -9,6 +9,9 @@ NEWSPIDER_MODULE = 'legit.spiders'
 LOG_LEVEL = 'ERROR'
 LOG_FILE = f"logs/{BOT_NAME}_{strftime('%Y%m%d%H%M%S', gmtime())}.log"
 
+# OUTPUT
+OUTPUT_FILE="data/legitng_hausa.jsonl"
+
 # SELENIUM
 SELENIUM_DRIVER_NAME = "chrome"
 SELENIUM_DRIVER_EXECUTABLE_PATH = "/Users/theyorubayesian/Downloads/chromedriver"
@@ -29,7 +32,8 @@ DOWNLOADER_MIDDLEWARES = {
 
 # PIPELINES
 ITEM_PIPELINES = {
-    'legit.pipelines.StdOutPipeline': 300, 
+    "legit.pipelines.JsonWriterPipeline": 300,
+    # 'legit.pipelines.StdOutPipeline': 300, 
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -39,7 +43,7 @@ ITEM_PIPELINES = {
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 4
+CONCURRENT_REQUESTS = 16
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay

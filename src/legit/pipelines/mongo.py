@@ -1,9 +1,9 @@
-from ._base import BasePipeline
-
 import pymongo
 from pymongo import DESCENDING
 from scrapy.utils.project import get_project_settings
 from scrapy.exceptions import DropItem
+
+from ._base import BasePipeline
 
 settings = get_project_settings()
 
