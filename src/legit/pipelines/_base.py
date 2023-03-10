@@ -24,6 +24,5 @@ class BasePipeline(ABC):
 
 class StdOutPipeline(BasePipeline):
     def process_item(self, item, spider):
-        # pprint(repr(item))
-        spider.logger.info(repr(item))
+        pprint(repr(item))
         return item

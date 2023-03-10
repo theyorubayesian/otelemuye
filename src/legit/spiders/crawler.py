@@ -13,7 +13,7 @@ from legit.middlewares.http import SeleniumRequest
 
 class LegitNGSpider(SitemapSpider):
     name = "legitng_spider"
-    # sitemap_rules = [("", "_make_selenium_request")]
+    sitemap_rules = [("", "_make_selenium_request")]
     sitemap_urls = ["https://hausa.legit.ng/legit/sitemap/hausa/news.xml"]
     content_tags = ["p", "strong", "blockquote"]
     article_data = namedtuple("article", ["headline", "content", "article_id"])
@@ -31,16 +31,15 @@ class LegitNGSpider(SitemapSpider):
         
         return self.article_data(headline, content, article_id)
     
-    def parse(self, response: Response) -> SeleniumRequest:
-        self.logger.info("Making selenium request")
+    def _make_selenium_request(self, response: Response) -> Request:
         yield SeleniumRequest(
             url=response.url, 
             callback=self._parse_article,
-            # wait_until=
+            dont_filter=True
+            # wait_until= # TODO
         )
     
     def _parse_article(self, response: Response) -> LegitNGArticle:
-        self.logger.info("Parsing article")
         soup = BeautifulSoup(response.body)
         article = self._get_article_data(soup)
         item = LegitNGArticle(

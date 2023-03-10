@@ -1,6 +1,13 @@
+from time import gmtime
+from time import strftime
+
 BOT_NAME = "LegitNG"
 SPIDER_MODULES = ['legit.spiders']
 NEWSPIDER_MODULE = 'legit.spiders'
+
+# LOGS
+LOG_LEVEL = 'ERROR'
+LOG_FILE = f"logs/{BOT_NAME}_{strftime('%Y%m%d%H%M%S', gmtime())}.log"
 
 # SELENIUM
 SELENIUM_DRIVER_NAME = "chrome"
@@ -17,12 +24,12 @@ SELENIUM_DRIVER_ARGUMENTS = [
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 DOWNLOADER_MIDDLEWARES = {
-    'legit.middlewares.SeleniumMiddleware': 800
+    'legit.middlewares.SeleniumMiddleware': 543
 }
 
 # PIPELINES
 ITEM_PIPELINES = {
-    'legit.pipelines.StdOutPipeline': 800, 
+    'legit.pipelines.StdOutPipeline': 300, 
 }
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
@@ -32,7 +39,7 @@ ITEM_PIPELINES = {
 ROBOTSTXT_OBEY = True
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 1
+CONCURRENT_REQUESTS = 4
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay

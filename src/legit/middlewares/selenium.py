@@ -97,7 +97,6 @@ class SeleniumMiddleware:
     def process_request(self, request, spider):
         """Process a request using the selenium driver if applicable"""
 
-        # spider.logger.info(request.screenshot)
         if not isinstance(request, SeleniumRequest):
             return None
 
@@ -124,7 +123,7 @@ class SeleniumMiddleware:
             self.driver.execute_script(request.script)
 
         body = str.encode(self.driver.page_source)
-        # body = self.driver.page_source
+        
         # Expose the driver via the "meta" attribute
         request.meta.update({'driver': self.driver})
 
