@@ -21,7 +21,6 @@ do
     else
         kill -9 $pid
         read pid < <(run_spider)
-        pid=$1
     fi
 
     sleep 300
