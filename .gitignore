@@ -1,4 +1,5 @@
-data/*.tsv
+crawls/
+data/
 .vscode/
 
 # Byte-compiled / optimized / DLL files

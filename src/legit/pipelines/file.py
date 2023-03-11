@@ -11,7 +11,7 @@ settings = get_project_settings()
 class JsonWriterPipeline(BasePipeline):
 
     def open_spider(self, spider):
-        self.file = open(settings["OUTPUT_FILE"], 'w')
+        self.file = open(settings["OUTPUT_FILE"], 'a')
 
     def close_spider(self, spider):
         self.file.close()
