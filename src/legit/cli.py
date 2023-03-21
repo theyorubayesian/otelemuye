@@ -1,7 +1,3 @@
-# TODO: Write CLI that:
-# - allows a run forever, 
-# processes keyboard interrupt
-# gracefully ends scrapy crawl pr
 import argparse
 import json
 import logging
@@ -88,7 +84,7 @@ def ensure_completion(spider: Spider, settings: Settings, interval: int):
         from twisted.internet import reactor
         from twisted.internet import default
         default.install()
-        
+
         start_crawl(spider, settings, interval)
 
 

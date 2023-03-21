@@ -12,6 +12,8 @@ LOG_LEVEL = 'INFO'
 # OUTPUT
 OUTPUT_FILE="data/new_legitng_english.jsonl"
 
+# Document files inside JOBDIR
+# https://github.com/scrapy/scrapy/issues/4842
 JOBDIR="crawls/new_legitng_spider"
 
 # SELENIUM

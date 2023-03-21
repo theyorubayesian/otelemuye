@@ -32,6 +32,8 @@ class LegitNGSpider(SitemapSpider):
         for url in self.sitemap_urls:
             yield Request(url, self._parse_sitemap, dont_filter=True)
 
+    # Sitemap spider does not resume though JOBDIR is set
+    # https://github.com/scrapy/scrapy/issues/4479
     def _parse_sitemap(self, response):
         if response.url.endswith("/robots.txt"):
             for url in sitemap_urls_from_robots(response.text, base_url=response.url):

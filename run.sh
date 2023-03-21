@@ -20,6 +20,7 @@ do
     if $running; then
         :
     else
+        # https://www.educba.com/linux-kill-signals/
         kill -2 $pid
         read pid < <(run_spider)
     fi
