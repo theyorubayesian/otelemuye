@@ -6,11 +6,13 @@ SPIDER_MODULES = ['legit.spiders']
 NEWSPIDER_MODULE = 'legit.spiders'
 
 # LOGS
-LOG_LEVEL = 'ERROR'
-LOG_FILE = f"logs/{BOT_NAME}_{strftime('%Y%m%d%H%M%S', gmtime())}.log"
+LOG_LEVEL = 'INFO'
+# LOG_FILE = f"logs/{BOT_NAME}_{strftime('%Y%m%d%H%M%S', gmtime())}.log"
 
 # OUTPUT
-OUTPUT_FILE="data/legitng_hausa.jsonl"
+OUTPUT_FILE="data/new_legitng_english.jsonl"
+
+JOBDIR="crawls/new_legitng_spider"
 
 # SELENIUM
 SELENIUM_DRIVER_NAME = "chrome"
@@ -40,10 +42,10 @@ ITEM_PIPELINES = {
 # USER_AGENT = 'nairaland (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules 
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
-CONCURRENT_REQUESTS = 16
+CONCURRENT_REQUESTS = 32
 
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay

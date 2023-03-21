@@ -15,10 +15,10 @@ class BasePipeline(ABC):
     def from_crawler(cls, crawler):
         return cls(crawler)
 
-    def open_pipeline(self):
+    def open_spider(self, spider):
         pass
 
-    def close_pipeline(self):
+    def close_spider(self, spider):
         pass
 
 

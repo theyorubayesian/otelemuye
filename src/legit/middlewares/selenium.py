@@ -101,7 +101,7 @@ class SeleniumMiddleware:
         if not isinstance(request, SeleniumRequest):
             return None
 
-        spider.logger.info("Processing request")
+        spider.logger.debug("Processing request")
         self.driver.get(request.url)
 
         for cookie_name, cookie_value in request.cookies.items():
