@@ -1,8 +1,9 @@
-OUTPUT_FILE="data/complete_legitng_hausa.jsonl"
+OUTPUT_FILE="data/legitng_english.jsonl"
 LINE_COUNT=0
+touch $OUTPUT_FILE
 
 is_running() {
-    read NEW_LINE_COUNT file < <(wc -l < $OUTPUT_FILE)
+    read NEW_LINE_COUNT < <(wc -l < $OUTPUT_FILE)
     [[ $NEW_LINE_COUNT -gt $LINE_COUNT ]] && echo "true $NEW_LINE_COUNT" || echo "false $NEW_LINE_COUNT"
 }
 
@@ -19,7 +20,7 @@ do
     if $running; then
         :
     else
-        kill -9 $pid
+        kill -2 $pid
         read pid < <(run_spider)
     fi
 
