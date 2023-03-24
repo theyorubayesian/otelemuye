@@ -1,1 +1,48 @@
-# ọ̀tẹlẹ̀múyẹ́
+# Ọ̀tẹlẹ̀múyẹ́
+
+`Ọ̀tẹlẹ̀múyẹ́` means detective in Yoruba.
+
+This project, `Ọ̀tẹlẹ̀múyẹ́` provides an extensible framework for scraping websites which provide a sitemap. It relies on Scrapy and provides a Selenium middleware to handle dynamic content.
+
+## 🎬 Installation
+
+* Create a conda environment
+
+```bash
+conda create -n otelemuye python=3.9
+conda activate otelemuye
+```
+
+* Run the following command to install this project
+
+```bash
+pip install .
+```
+
+* If you would like a development installation, use the following command
+
+```bash
+pip install -e ".[dev]"
+```
+
+## Setup 🛠️
+
+* You can find a list of existing `spiders` [here](src/otelemuye/spiders/README.md).
+
+* To contribute new crawlers, extend [CustomSitemapSpider](src/otelemuye/spiders/_base.py) and provide concrete implementations of the abstract methods.
+
+* You will also need to provide a template config file in [config/](config). Your filename should be name of the spider class you created e.g. `legitng.yaml` is the config file for `LegitNGSpider`.
+
+* See [LegitNGSpider](src/otelemuye/spiders/legitng.py) for guidance if your crawler requires Selenium to load dynamic content.
+
+* You can run start crawling by running a command similar to:
+
+```bash
+otelemuye --run-till-complete --spider-class LegitNGSpider --check-interval 300
+```
+
+* To see other commands and functionalities
+
+```bash
+otelemuye --help
+```

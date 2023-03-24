@@ -3,7 +3,8 @@ import os
 from typing import Tuple
 
 from scrapy.crawler import CrawlerProcess
-from scrapy.utils.misc import create_instance, load_object
+from scrapy.utils.misc import create_instance
+from scrapy.utils.misc import load_object
 from scrapy.utils.ossignal import install_shutdown_handlers
 from scrapy.settings import Settings
 from twisted.internet.task import LoopingCall
@@ -13,21 +14,17 @@ logger = logging.getLogger(__name__)
 
 
 class CustomCrawlerProcess(CrawlerProcess):
-    def start(self, interval, line_count=0, stop_after_crawl=True, install_signal_handlers=True):
-        """
-        This method starts a :mod:`~twisted.internet.reactor`, adjusts its pool
-        size to :setting:`REACTOR_THREADPOOL_MAXSIZE`, and installs a DNS cache
-        based on :setting:`DNSCACHE_ENABLED` and :setting:`DNSCACHE_SIZE`.
-
-        If ``stop_after_crawl`` is True, the reactor will be stopped after all
-        crawlers have finished, using :meth:`join`.
-
-        :param bool stop_after_crawl: stop or not the reactor when all
-            crawlers have finished
-
-        :param bool install_signal_handlers: whether to install the shutdown
-            handlers (default: True)
-        """
+    """
+    Overrides `CrawlerProcess` to insert a LoopingCall that ensures scraping is still running.
+    CrawlerProcess is still initialized as normal. LoopingCall is inserted when `start` is called with interval > 0
+    """
+    def start(
+            self, 
+            interval: int = 0, 
+            line_count: int = 0, 
+            stop_after_crawl: bool = True, 
+            install_signal_handlers: int = True
+        ):
         from twisted.internet import reactor
 
         if stop_after_crawl:
@@ -45,18 +42,27 @@ class CustomCrawlerProcess(CrawlerProcess):
         tp = reactor.getThreadPool()
         tp.adjustPoolsize(maxthreads=self.settings.getint("REACTOR_THREADPOOL_MAXSIZE"))
         
-        try:
-            os.remove(self.settings["RESTART_INDICATOR"])
-        except OSError:
-            pass
+        # ------------------------
+        # Additional functionality
+        # ------------------------
+        if interval:
+            self.ls = []
+            for idx, crawler in enumerate(list(self.crawlers)):
+                try:
+                    os.remove(crawler.settings["RESTART_INDICATOR"])
+                except OSError:
+                    pass
 
-        self.line_count = line_count
-        self.l = LoopingCall(
-            self.ensure_completion,
-            settings=self.settings
-        )
-        ld = self.l.start(interval=interval, now=False)
-        ld.addErrback(err)
+                self.line_count = line_count
+                l = LoopingCall(
+                    self.ensure_completion,
+                    settings=crawler.settings,
+                    crawler_idx=idx
+                )
+                self.ls.append(l)
+                ld = l.start(interval=interval, now=False)
+                ld.addErrback(err)
+        # ------------------------
 
         reactor.addSystemEventTrigger("before", "shutdown", self.stop)
         reactor.run(installSignalHandlers=False)  # blocking call
@@ -67,14 +73,12 @@ class CustomCrawlerProcess(CrawlerProcess):
         return new_line_count > line_count, new_line_count
     
     def _graceful_stop_reactor(self):
-        self.l.stop()
+        if getattr(self, "ls"):
+            [l.stop() for l in self.ls]
+        
         return super()._graceful_stop_reactor()
 
-    def crawl(self, crawler_or_spidercls, *args, **kwargs):
-        self.spidercls = crawler_or_spidercls
-        return super().crawl(crawler_or_spidercls, *args, **kwargs)
-
-    def ensure_completion(self, settings: Settings):
+    def ensure_completion(self, settings: Settings, crawler_idx: int):
         logger.info("Checking line count")
 
         running, line_count = self._is_running(settings["OUTPUT_FILE"], self.line_count)
@@ -83,6 +87,7 @@ class CustomCrawlerProcess(CrawlerProcess):
         if not running:
             logger.info("Scraping stopped running.")
             from twisted.internet import reactor
+            # TODO: Stop the particular crawler rather than reactor?
             reactor.callFromThread(self._graceful_stop_reactor)
 
             open(settings["RESTART_INDICATOR"], "w").close()

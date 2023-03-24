@@ -1,5 +1,7 @@
-"""This module contains the ``SeleniumRequest`` class"""
-# https://github.com/clemfromspace/scrapy-selenium
+"""
+This module contains the ``SeleniumMiddleware`` scrapy middleware
+Source: https://github.com/clemfromspace/scrapy-selenium
+"""
 from scrapy import Request
 
 

@@ -4,14 +4,15 @@ import logging
 import sys
 from pathlib import Path
 
+import yaml
 from scrapy.settings import Settings
 from scrapy.spiders import Spider
 from scrapy.utils.project import get_project_settings
 
-from legit import spiders
-from legit.process import CustomCrawlerProcess
+from otelemuye import spiders
+from otelemuye.process import CustomCrawlerProcess as CrawlerProcess
 
-# Advanced logging configuration
+# TODO: Advanced logging configuration
 # https://stackoverflow.com/a/31838281
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
@@ -36,8 +37,9 @@ def get_args() -> argparse.Namespace:
     sub_parser = parser.add_subparsers(dest="command", title="Commands", description="Valid commands")
     run_parser = sub_parser.add_parser("run-till-complete", help="Run crawler until all articles are collected.")
     run_parser.add_argument("--spider-class", type=str, help="Name of Spider class")
+    run_parser.add_argument("--spider-config-file", type=str, help="File containing Spider class attributes to be set")
     run_parser.add_argument("--job-dir", type=str, help="Job directory")
-    run_parser.add_argument("--check-interval", type=int, help="Check if crawler is still running after defined interval (seconds)")
+    run_parser.add_argument("--check-interval", default=0, type=int, help="Check if crawler is still running after defined interval (seconds)")
 
     args, _ = parser.parse_known_args()
     if args.config_file:
@@ -45,11 +47,16 @@ def get_args() -> argparse.Namespace:
         args_dict = vars(args)
         args_dict.update(config)
     
+    if not args.spider_config_file:
+        args.spider_config_file = f"config/{args.spider_class.lower().replace('spider', '')}.yaml"
+    
+    assert Path(args.spider_config_file).exists(), "`spider_config_file` is not set or does not exist"
+    
     return args
 
 
-def start_crawl(spider_class: Spider, settings: Settings, interval: int):
-    process = CustomCrawlerProcess(settings)
+def start_crawl(spider_class: str, settings: Settings, interval: int):
+    process = CrawlerProcess(settings)
     process.crawl(spider_class)
     process.start(interval=interval)
 
@@ -72,15 +79,17 @@ def restart_crawl(
 def main():
     args = get_args()
 
+    # TODO: Run multiple spiders
     if args.command == "run-till-complete":
         settings = get_project_settings()
-        # spider_class = getattr(module, import_module(args.spider_class, package="legit.spiders.crawler")
         spider_class = getattr(spiders, args.spider_class)
+        spider_class.set_spider_attributes(args.spider_config_file)
 
         start_crawl(spider_class, settings, args.check_interval)
 
         while True:
-            if Path(settings["RESTART_INDICATOR"]).exists():
+            if "RESTART_INDICATOR" in spider_class.custom_settings and \
+            Path(spider_class.custom_settings["RESTART_INDICATOR"]).exists():
                 restart_crawl(spider_class, settings, args.check_interval)
             else:
                 break

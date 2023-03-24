@@ -1,17 +1,14 @@
 import json
 
 from itemadapter import ItemAdapter
-from scrapy.utils.project import get_project_settings
 
 from ._base import BasePipeline
-
-settings = get_project_settings()
 
 
 class JsonWriterPipeline(BasePipeline):
 
     def open_spider(self, spider):
-        self.file = open(settings["OUTPUT_FILE"], 'a')
+        self.file = open(spider.settings["OUTPUT_FILE"], 'a')
 
     def close_spider(self, spider):
         self.file.close()
