@@ -4,7 +4,7 @@ from typing import Optional
 
 
 @dataclass
-class LegitNGArticle:
+class Article:
     url: str
     headline: str
     content: str

@@ -1,4 +1,7 @@
-"""This module contains the ``SeleniumMiddleware`` scrapy middleware"""
+"""
+This module contains the ``SeleniumMiddleware`` scrapy middleware
+Source: https://github.com/clemfromspace/scrapy-selenium
+"""
 
 from importlib import import_module
 from typing import List

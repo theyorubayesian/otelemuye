@@ -2,25 +2,18 @@ from time import gmtime
 from time import strftime
 import random
 
-BOT_NAME = "LegitNG"
-SPIDER_MODULES = ['legit.spiders']
-NEWSPIDER_MODULE = 'legit.spiders'
+BOT_NAME = "Otelemuye"
+SPIDER_MODULES = ['otelemuye.spiders']
+NEWSPIDER_MODULE = 'otelemuye.spiders'
 
 # LOGS
 LOG_LEVEL = 'INFO'
 # LOG_FILE = f"logs/{BOT_NAME}_{strftime('%Y%m%d%H%M%S', gmtime())}.log"
 
-# OUTPUT
-OUTPUT_FILE="data/new_legitng_english.jsonl"
-RESTART_INDICATOR=f"{BOT_NAME}.restart"
-
 # Document files inside JOBDIR
-# https://github.com/scrapy/scrapy/issues/4842
-JOBDIR="crawls/new_legitng_spider"
+# https://github.com/scrapy/scrapy/issues/4842"
 
 # SELENIUM
-SELENIUM_DRIVER_NAME = "chrome"
-SELENIUM_DRIVER_EXECUTABLE_PATH = "/Users/theyorubayesian/Downloads/chromedriver"
 SELENIUM_DRIVER_ARGUMENTS = [
     "--disable-gpu",
     "--disable-infobars",
@@ -30,20 +23,8 @@ SELENIUM_DRIVER_ARGUMENTS = [
     "--disable-blink-features=AutomationControlled"
 ]
 
-# Enable or disable downloader middlewares
-# See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
-DOWNLOADER_MIDDLEWARES = {
-    'legit.middlewares.SeleniumMiddleware': 543
-}
-
-# PIPELINES
-ITEM_PIPELINES = {
-    "legit.pipelines.JsonWriterPipeline": 300,
-    # 'legit.pipelines.StdOutPipeline': 300, 
-}
-
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-# USER_AGENT = 'nairaland (+http://www.yourdomain.com)'
+# USER_AGENT = 'otelemuye (+http://www.yourdomain.com)'
 
 # Obey robots.txt rules 
 ROBOTSTXT_OBEY = False
@@ -73,9 +54,6 @@ TELNETCONSOLE_ENABLED = False
 
 # Enable or disable spider middlewares
 # See https://doc.scrapy.org/en/latest/topics/spider-middleware.html
-# SPIDER_MIDDLEWARES = {
-#    'nairaland.middlewares.NairalandSpiderMiddleware': 543,
-# }
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html

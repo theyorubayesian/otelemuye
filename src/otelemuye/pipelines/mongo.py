@@ -7,7 +7,7 @@ from ._base import BasePipeline
 
 settings = get_project_settings()
 
-
+# TODO: Fix settings for multiple spiders
 class MongoPipeline(BasePipeline):
     def __init__(self) -> None:
         connection = pymongo.MongoClient(
