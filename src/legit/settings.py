@@ -1,5 +1,6 @@
 from time import gmtime
 from time import strftime
+import random
 
 BOT_NAME = "LegitNG"
 SPIDER_MODULES = ['legit.spiders']
@@ -11,6 +12,7 @@ LOG_LEVEL = 'INFO'
 
 # OUTPUT
 OUTPUT_FILE="data/new_legitng_english.jsonl"
+RESTART_INDICATOR=f"{BOT_NAME}.restart"
 
 # Document files inside JOBDIR
 # https://github.com/scrapy/scrapy/issues/4842
@@ -52,7 +54,7 @@ CONCURRENT_REQUESTS = 32
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-# DOWNLOAD_DELAY = 3
+DOWNLOAD_DELAY = random.randint(3, 5) * random.random()
 # The download delay setting will honor only one of:
 # CONCURRENT_REQUESTS_PER_DOMAIN = 16
 # CONCURRENT_REQUESTS_PER_IP = 16

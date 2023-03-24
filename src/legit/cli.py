@@ -2,24 +2,25 @@ import argparse
 import json
 import logging
 import sys
-from typing import Tuple
+from pathlib import Path
 
-from scrapy.crawler import CrawlerRunner
 from scrapy.settings import Settings
 from scrapy.spiders import Spider
-from scrapy.utils.log import configure_logging
 from scrapy.utils.project import get_project_settings
-from twisted.internet import reactor
-from twisted.internet.task import LoopingCall
 
 from legit import spiders
+from legit.process import CustomCrawlerProcess
 
+# Advanced logging configuration
+# https://stackoverflow.com/a/31838281
 logging.basicConfig(
     format="%(asctime)s | %(levelname)s | %(name)s | %(message)s",
     datefmt="%Y-%m-%d %H:%M:%S",
     level="INFO",
 )
 logger = logging.getLogger(__name__)
+selenium_logger = logging.getLogger("selenium.webdriver.remote.remote_connection")
+selenium_logger.setLevel(logging.WARNING)
 
 
 def get_args() -> argparse.Namespace:
@@ -47,45 +48,25 @@ def get_args() -> argparse.Namespace:
     return args
 
 
-def _is_running(output_file: str, line_count: int) -> Tuple[bool, int]:
-    new_line_count = sum(1 for _ in open(output_file, "r"))
-    return new_line_count > line_count, new_line_count
-
-
 def start_crawl(spider_class: Spider, settings: Settings, interval: int):
-    global line_count
-    line_count = 0
-
-    configure_logging(settings=settings)
-    runner = CrawlerRunner(settings)
-    d = runner.crawl(spider_class)
-
-    # d = runner.join()
-    d.addBoth(lambda _: reactor.stop())
-
-    l = LoopingCall(ensure_completion, spider=spider_class, settings=settings, interval=interval)
-    l.start(interval=interval, now=False)
-    reactor.run()
+    process = CustomCrawlerProcess(settings)
+    process.crawl(spider_class)
+    process.start(interval=interval)
 
 
-def ensure_completion(spider: Spider, settings: Settings, interval: int):
-    logging.info("Checking line count")
-    global line_count
-    running, line_count = _is_running(settings["OUTPUT_FILE"], line_count)
-    
-    if not running:
-        logging.info("Scraping stopped running.")
-        reactor.stop()
+def restart_crawl(
+    spider_class: Spider, 
+    settings: Settings, 
+    interval: int
+):
+    # Restarting A Twisted Reactor: https://www.blog.pythonlibrary.org/2016/09/14/restarting-a-twisted-reactor/
+    del sys.modules["twisted.internet.reactor"]
 
-        logging.info("Restarting Crawl")
-        # Restarting A Twisted Reactor: https://www.blog.pythonlibrary.org/2016/09/14/restarting-a-twisted-reactor/
-        del sys.modules["twisted.internet.reactor"]
+    from twisted.internet import reactor
+    from twisted.internet import default
+    default.install()
 
-        from twisted.internet import reactor
-        from twisted.internet import default
-        default.install()
-
-        start_crawl(spider, settings, interval)
+    start_crawl(spider_class, settings, interval)
 
 
 def main():
@@ -98,9 +79,18 @@ def main():
 
         start_crawl(spider_class, settings, args.check_interval)
 
-    # TODO: Get Spider stats while running: 
-    #  https://stackoverflow.com/questions/34799320/scrapy-get-or-flush-stats-while-spider-is-running
+        while True:
+            if Path(settings["RESTART_INDICATOR"]).exists():
+                restart_crawl(spider_class, settings, args.check_interval)
+            else:
+                break
 
+    # TODO: Get spider stats. If finished_reason, restart spider
+    # TODO: Get Spider stats while running: 
+    # https://stackoverflow.com/questions/34799320/scrapy-get-or-flush-stats-while-spider-is-running
+    # https://stackoverflow.com/questions/59141363/writing-scraping-stats-to-a-database-using-scrapy-statscollector
+    # https://github.com/scrapy/scrapy/issues/845
+    # https://stackoverflow.com/questions/12553117/how-to-filter-duplicate-requests-based-on-url-in-scrapy
 
 if __name__ == "__main__":
     main()
