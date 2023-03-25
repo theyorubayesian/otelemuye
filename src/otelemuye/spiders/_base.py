@@ -90,10 +90,14 @@ class CustomSitemapSpider(ABC, SitemapSpider):
         """
         pass
     
-    @abstractmethod
-    def parse(self, response: Response) -> Article:
-        """
-        Use `_get_article_data` to parse a page and return `Article` passed to pipeline
-        """
-        pass
+    def parse(self, response: Response, **kwargs) -> Article:
+        soup = BeautifulSoup(response.body)
+        article = self._get_article_data(soup)
+        item = Article(
+            url=response.url, 
+            headline=article.headline, 
+            content=article.content,
+            category=article.category
+        )
+        yield item
     
