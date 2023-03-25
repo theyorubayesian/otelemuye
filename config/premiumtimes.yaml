@@ -1,0 +1,27 @@
+sitemap_urls:
+  - "https://hausa.premiumtimesng.com/post-sitemap.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap2.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap3.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap4.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap5.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap6.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap7.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap8.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap9.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap10.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap11.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap12.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap13.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap14.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap15.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap16.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap17.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap18.xml"
+  - "https://hausa.premiumtimesng.com/post-sitemap19.xml"
+
+custom_settings:
+  JOBDIR: "crawls/hausa_premiumtimes"
+  CONCURRENT_REQUESTS: 2
+  OUTPUT_FILE: "data/hausa_premiumtimes.jsonl"
+  ITEM_PIPELINES:
+    otelemuye.pipelines.JsonWriterPipeline: 300
