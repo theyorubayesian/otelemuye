@@ -23,7 +23,7 @@ class LegitNGSpider(CustomSitemapSpider):
     def _make_selenium_request(self, response: Response) -> Request:
         yield SeleniumRequest(
             url=response.url, 
-            callback=self._parse_article,
+            callback=self.parse,
             dont_filter=True,
             # wait_time=30,
             # wait_until=EC.presence_of_element_located((By.CSS_SELECTOR, "div.post__content"))
@@ -44,7 +44,7 @@ class LegitNGSpider(CustomSitemapSpider):
         
         return self.article_data(headline, content, category)
     
-    def _parse_article(self, response: Response) -> Article:
+    def parse(self, response: Response, **kwargs) -> Article:
         soup = BeautifulSoup(response.body)
         article = self._get_article_data(soup)
         item = Article(

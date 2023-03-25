@@ -4,7 +4,6 @@ import logging
 import sys
 from pathlib import Path
 
-import yaml
 from scrapy.settings import Settings
 from scrapy.spiders import Spider
 from scrapy.utils.project import get_project_settings
