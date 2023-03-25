@@ -73,8 +73,8 @@ class CustomCrawlerProcess(CrawlerProcess):
         return new_line_count > line_count, new_line_count
     
     def _graceful_stop_reactor(self):
-        if getattr(self, "ls"):
-            [l.stop() for l in self.ls]
+        if hasattr(self, "ls"):
+            _ = [l.stop() for l in self.ls]
         
         return super()._graceful_stop_reactor()
 

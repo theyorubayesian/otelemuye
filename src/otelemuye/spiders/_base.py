@@ -20,12 +20,12 @@ logger = logging.getLogger(__name__)
 ArticleData = NamedTuple("article", [("headline", str), ('content', str), ("category", str)])
 
 
-class CustomSitemapSpider(SitemapSpider):
+class CustomSitemapSpider(ABC, SitemapSpider):
     """
     Subclass and provide custom_settings as a class attribute
     """
     article_data = namedtuple("article", ["headline", "content", "category"])
-
+    
     def start_requests(self):
         for url in self.sitemap_urls:
             yield Request(url, self._parse_sitemap, dont_filter=True)
@@ -91,7 +91,7 @@ class CustomSitemapSpider(SitemapSpider):
         pass
     
     @abstractmethod
-    def _parse_article(self, response: Response) -> Article:
+    def parse(self, response: Response) -> Article:
         """
         Use `_get_article_data` to parse a page and return `Article` passed to pipeline
         """
