@@ -1,0 +1,7 @@
+{
+    "spider_name": null,
+    "language": null,
+    "use_selenium": false,
+    "selenium_driver_name": [null, "chrome", "firefox"],
+    "selenium_driver_path": null
+}

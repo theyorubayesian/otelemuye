@@ -1,6 +1,7 @@
 import argparse
 import json
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -34,6 +35,19 @@ def get_args() -> argparse.Namespace:
     parser.add_argument("--verbose", type=bool, default=True, help="If True, print verbose output")
 
     sub_parser = parser.add_subparsers(dest="command", title="Commands", description="Valid commands")
+
+    newspider_parser = sub_parser.add_parser("create-spider", help="Create new spider from template")
+    newspider_parser.add_argument("--template", default="templates/sitemap-spider", help="Template to creat new spider from")
+    newspider_parser.add_argument("--template-config", help="Path to JSON config file for template")
+    newspider_parser.add_argument("--spider-name", help="Name of spider to create")
+    newspider_parser.add_argument("--language", help="Language of website spider will crawl")
+    newspider_parser.add_argument("--overwrite", action="store_true", help="Overwrite files if they already exist")
+    
+    middleware_args = newspider_parser.add_argument_group("Middleware Arguments")
+    middleware_args.add_argument("--use_selenium", action="store_true", help="Use Selenium Downloader Middleware")
+    middleware_args.add_argument("--driver-type", choices=["chrome", "firefox"], help="Type of webdriver to use")
+    middleware_args.add_argument("--driver-path", default=os.getenv("SELENIUM_DRIVER_PATH"), help="The path of the executable binary of the driver")
+
     run_parser = sub_parser.add_parser("run-till-complete", help="Run crawler until all articles are collected.")
     run_parser.add_argument("--spider-class", type=str, help="Name of Spider class")
     run_parser.add_argument("--spider-config-file", type=str, help="File containing Spider class attributes to be set")
@@ -46,10 +60,12 @@ def get_args() -> argparse.Namespace:
         args_dict = vars(args)
         args_dict.update(config)
     
-    if not args.spider_config_file:
-        args.spider_config_file = f"config/{args.spider_class.lower().replace('spider', '')}.yaml"
+    if args.command == "run-till-complete":
+        if not args.spider_config_file:
+            args.spider_config_file = f"config/{args.spider_class.lower().replace('spider', '')}.yaml"
     
-    assert Path(args.spider_config_file).exists(), "`spider_config_file` is not set or does not exist"
+        assert Path(args.spider_config_file).exists(), \
+            "`spider_config_file` is not set or does not exist"
     
     return args
 
@@ -77,6 +93,37 @@ def restart_crawl(
 
 def main():
     args = get_args()
+
+    if args.command == "create-spider":
+        from shutil import copy2
+        from tempfile import TemporaryDirectory
+        from cookiecutter.main import cookiecutter
+
+        dest = {
+            ".yaml": "config",
+            ".py": "src/otelemuye/spiders"
+        }
+
+        with TemporaryDirectory() as tmpdir:
+            cookiecutter(
+                template=args.template,
+                output_dir=tmpdir,
+                no_input=True,
+                config_file=args.template_config,
+                extra_context={
+                    "spider_name": args.spider_name,
+                    "use_selenium": "true" if args.use_selenium else "false",
+                    "language": args.language,
+                    "selenium_driver_name": args.driver_type,
+                    "selenium_driver_path": args.driver_path
+                }
+            )
+
+            src = Path(tmpdir).glob("**/*.*")
+
+            for f in src:
+                copy2(f, dest[f.suffix])
+                logging.info(f"Created {f.name} in {dest[f.suffix]}")
 
     # TODO: Run multiple spiders
     if args.command == "run-till-complete":
