@@ -2,7 +2,7 @@
 
 `Ọ̀tẹlẹ̀múyẹ́` means detective in Yoruba.
 
-This project, `Ọ̀tẹlẹ̀múyẹ́` provides an extensible framework for scraping websites which provide a sitemap. It relies on Scrapy and provides a Selenium middleware to handle dynamic content.
+This project, `Ọ̀tẹlẹ̀múyẹ́` provides an extensible framework for scraping websites. It relies on Scrapy and provides a Selenium middleware to handle dynamic content.
 
 ## 🎬 Installation
 
@@ -19,7 +19,7 @@ conda activate otelemuye
 pip install .
 ```
 
-* If you would like a development installation, use the following command
+* If you would like a development installation instead, use the following command
 
 ```bash
 pip install -e ".[dev]"
@@ -29,7 +29,7 @@ pip install -e ".[dev]"
 
 * You can find a list of existing `spiders` [here](src/otelemuye/spiders/README.md).
 
-* To contribute new crawlers, extend [CustomSitemapSpider](src/otelemuye/spiders/_base.py) and provide concrete implementations of the abstract methods.
+* To contribute new crawlers, extend `CustomSitemapSpider` or `CustomSpider`, both of which are in [_base.py](src/otelemuye/spiders/_base.py), and provide concrete implementations of the abstract methods.
 
 * You will also need to provide a template config file in [config/](config). Your filename should be name of the spider class you created e.g. `legitng.yaml` is the config file for `LegitNGSpider`.
 
@@ -38,10 +38,11 @@ pip install -e ".[dev]"
 * You can run start crawling by running a command similar to:
 
 ```bash
-otelemuye --run-till-complete --spider-class LegitNGSpider --check-interval 300
+otelemuye run-till-complete --spider-class LegitNGSpider --check-interval 300
 ```
+Note that `--check-interval` is only used when the Selenium middleware is in use.
 
-* To see other commands and functionalities
+* To see other commands, configurations and functionalities
 
 ```bash
 otelemuye --help
