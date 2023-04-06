@@ -130,7 +130,7 @@ class CustomSpider(ABC, BaseSpider, Spider):
     def _get_article_urls(self, soup: BeautifulSoup) -> List[str]:
         pass
 
-    def _parse_list_page(self, response):
+    def _parse_list_page(self, response: Response):
         soup = BeautifulSoup(response.body, "lxml")
         next_page = self._find_next_page(soup, response)
 

@@ -32,9 +32,9 @@ class TukoSpider(CustomSpider):
     def _find_next_page(self, soup: BeautifulSoup, response: Response) -> Optional[str]:
         # https://stackoverflow.com/a/60398600
         # urlparse – Split URL into component pieces: http://pymotw.com/2/urlparse/
-        scroll = soup.find("svg", attrs={"class": "c-action-link__border"})
-
-        if scroll:
+        first_article = soup.find("article", attrs={"class": "c-article-card-horizontal l-article-loadable-list"})
+        
+        if first_article:
             curr_url = urlparse(response.url)
             try:
                 base, category, idx = PurePosixPath(curr_url.path).parts
@@ -51,7 +51,7 @@ class TukoSpider(CustomSpider):
                     None, None, None
                 ))
             return next_url
-    
+ 
     def _get_article_urls(self, soup: BeautifulSoup) -> List[str]:
         all_urls = [urlparse(a.get("href")) for a in soup.find_all("a")]
         article_urls = [
