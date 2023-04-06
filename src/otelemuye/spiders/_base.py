@@ -2,11 +2,14 @@ import logging
 from abc import ABC
 from abc import abstractmethod
 from collections import namedtuple
+from typing import List
 from typing import NamedTuple
+from typing import Optional
 
 import yaml
 from bs4 import BeautifulSoup
 from scrapy import Request
+from scrapy import Spider
 from scrapy.http.response import Response
 from scrapy.spiders import SitemapSpider
 from scrapy.spiders.sitemap import iterloc
@@ -20,12 +23,56 @@ logger = logging.getLogger(__name__)
 ArticleData = NamedTuple("article", [("headline", str), ('content', str), ("category", str)])
 
 
-class CustomSitemapSpider(ABC, SitemapSpider):
+class BaseSpider:
+    article_data = namedtuple("article", ["headline", "content", "category"])
+
+    @staticmethod
+    def get_config_from_file(config_file: str) -> dict:
+        with open(config_file, "r") as f:
+            try:
+                config = yaml.safe_load(f)
+            except yaml.YAMLError as exc:
+                logger.warning(f"Custom settings could not be loaded from {config_file}")
+                logger.warning(exc)
+                config = {}
+        return config
+
+    @classmethod
+    def set_spider_attributes(cls, spider_config_file: str) -> None:
+        config: dict = cls.get_config_from_file(spider_config_file)
+        for key in config:
+            setattr(cls, key, config[key])
+
+    @staticmethod
+    def _clean_string(string: str) -> str:
+        """
+        Clean article content
+        """
+        return " ".join(string.split())
+
+    @abstractmethod
+    def _get_article_data(self, soup: BeautifulSoup) -> ArticleData:
+        """
+        Parse a page's soup and return headline, content and category in namedtuple
+        """
+        pass
+    
+    def parse(self, response: Response, **kwargs) -> Article:
+        soup = BeautifulSoup(response.body, "lxml")
+        article = self._get_article_data(soup)
+        item = Article(
+            url=response.url, 
+            headline=article.headline, 
+            content=article.content,
+            category=article.category
+        )
+        yield item
+
+
+class CustomSitemapSpider(ABC, BaseSpider, SitemapSpider):
     """
     Subclass and provide custom_settings as a class attribute
-    """
-    article_data = namedtuple("article", ["headline", "content", "category"])
-    
+    """    
     def start_requests(self):
         for url in self.sitemap_urls:
             yield Request(url, self._parse_sitemap, dont_filter=True)
@@ -59,45 +106,44 @@ class CustomSitemapSpider(ABC, SitemapSpider):
                         if r.search(loc):
                             yield Request(loc, callback=c)
                             break
-    @staticmethod
-    def get_config_from_file(config_file: str) -> dict:
-        with open(config_file, "r") as f:
-            try:
-                config = yaml.safe_load(f)
-            except yaml.YAMLError as exc:
-                logger.warning(f"Custom settings could not be loaded from {config_file}")
-                logger.warning(exc)
-                config = {}
-        return config
 
-    @classmethod
-    def set_spider_attributes(cls, spider_config_file: str) -> None:
-        config: dict = cls.get_config_from_file(spider_config_file)
-        for key in config:
-            setattr(cls, key, config[key])
 
-    @staticmethod
-    def _clean_string(string: str) -> str:
-        """
-        Clean article content
-        """
-        return " ".join(string.split())
+class CustomSpider(ABC, BaseSpider, Spider):
+    def start_requests(self):
+        if not self.start_urls and hasattr(self, "start_url"):
+            raise AttributeError(
+                "Crawling could not start: 'start_urls' not found "
+                "or empty (but found 'start_url' attribute instead, "
+                "did you miss an 's'?)"
+            )
+        for url in self.start_urls:
+            yield Request(url, dont_filter=True, callback=self._parse_list_page)
 
     @abstractmethod
-    def _get_article_data(self, soup: BeautifulSoup) -> ArticleData:
+    def _find_next_page(self, soup: BeautifulSoup, response: Response) -> Optional[str]:
         """
-        Parse a page's soup and return headline, content and category in namedtuple
+        Usually by finding the scroll or the navigation bar at bottom
         """
         pass
     
-    def parse(self, response: Response, **kwargs) -> Article:
-        soup = BeautifulSoup(response.body)
-        article = self._get_article_data(soup)
-        item = Article(
-            url=response.url, 
-            headline=article.headline, 
-            content=article.content,
-            category=article.category
-        )
-        yield item
-    
+    @abstractmethod
+    def _get_article_urls(self, soup: BeautifulSoup) -> List[str]:
+        pass
+
+    def _parse_list_page(self, response: Response):
+        soup = BeautifulSoup(response.body, "lxml")
+        next_page = self._find_next_page(soup, response)
+
+        if next_page:
+            yield Request(
+                url=next_page,
+                callback=self._parse_list_page
+            )
+
+        article_urls = self._get_article_urls(soup)
+        if article_urls:
+            for url in article_urls:
+                yield Request(
+                    url=url,
+                    callback=self.parse
+                )

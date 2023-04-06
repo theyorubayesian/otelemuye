@@ -1,0 +1,19 @@
+start_urls:
+  - https://kiswahili.tuko.co.ke/watu/
+  - https://kiswahili.tuko.co.ke/kenya/
+  - https://kiswahili.tuko.co.ke/burudani/
+  - https://kiswahili.tuko.co.ke/siasa/
+  - https://kiswahili.tuko.co.ke/michezo/
+  - https://kiswahili.tuko.co.ke/biashara/
+  - https://kiswahili.tuko.co.ke/mahusiano/
+  - https://kiswahili.tuko.co.ke/elimu/
+  - https://kiswahili.tuko.co.ke/habari-za-ulimwengu/
+  - https://kiswahili.tuko.co.ke/familia/
+
+custom_settings:
+  ROBOTSTXT_OBEY: false
+  JOBDIR: "crawls/tuko"
+  CONCURRENT_REQUESTS: 32
+  OUTPUT_FILE: "data/tuko_swahili.jsonl"
+  ITEM_PIPELINES:
+    otelemuye.pipelines.JsonWriterPipeline: 300
