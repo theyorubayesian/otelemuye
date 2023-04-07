@@ -1,24 +1,13 @@
 sitemap_urls:
-  - "https://atelewo.org/sitemap.xml"
-  - "https://atelewo.org/sitemap_1.xml"
-
-# sitemap_urls:
-#   - "http://atelewo.org/post-sitemap.xml"
-#   - "http://atelewo.org/page-sitemap.xml"
-#   - "http://atelewo.org/category-sitemap.xml"
-#   - "http://atelewo.org/post_tag-sitemap.xml"
-#   - "http://atelewo.org/author-sitemap.xml"
-
+  
+  - "http://atelewo.org/post-sitemap.xml"
 
 custom_settings:
-  SELENIUM_DRIVER_NAME: "chrome"
-  SELENIUM_DRIVER_EXECUTABLE_PATH: "/Users/theyorubayesian/Downloads/chromedriver"
+  ROBOTSTXT_OBEY: false
   JOBDIR: "crawls/atelewo_spider"
   RESTART_INDICATOR: "atelewoorg.restart"
-  CONCURRENT_REQUESTS: 4
+  CONCURRENT_REQUESTS: 32
   OUTPUT_FILE: "data/atelewoorg.jsonl"
-  DOWNLOADER_MIDDLEWARES:
-    otelemuye.middlewares.SeleniumMiddleware: 543
   ITEM_PIPELINES:
     otelemuye.pipelines.JsonWriterPipeline: 300
     

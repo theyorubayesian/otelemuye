@@ -1,5 +1,6 @@
 crawls/
-data/
+data/*
+!data/atelewoorg.jsonl
 .vscode/
 
 # Byte-compiled / optimized / DLL files
