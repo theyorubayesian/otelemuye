@@ -5,10 +5,7 @@ sitemap_urls:
 custom_settings:
   ROBOTSTXT_OBEY: false
   JOBDIR: "crawls/atelewo_spider"
-  RESTART_INDICATOR: "atelewoorg.restart"
   CONCURRENT_REQUESTS: 32
   OUTPUT_FILE: "data/atelewoorg.jsonl"
   ITEM_PIPELINES:
     otelemuye.pipelines.JsonWriterPipeline: 300
-    
- 
