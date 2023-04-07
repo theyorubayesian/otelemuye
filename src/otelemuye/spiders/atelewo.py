@@ -1,6 +1,7 @@
 import logging
 
 from bs4 import BeautifulSoup
+
 from ._base import ArticleData
 from ._base import CustomSitemapSpider
 
