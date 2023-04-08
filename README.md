@@ -29,7 +29,21 @@ pip install -e ".[dev]"
 
 * You can find a list of existing `spiders` [here](src/otelemuye/spiders/README.md).
 
-* To contribute new crawlers, extend `CustomSitemapSpider` or `CustomSpider`, both of which are in [_base.py](src/otelemuye/spiders/_base.py), and provide concrete implementations of the abstract methods.
+* See [example.ipynb](notebooks/example.ipynb) to see notebook examples of how you can create your own Spider and start crawling.
+
+* To use this tool via command line, you will require a development installation. See [Installation](#🎬-installation)
+
+* You can create a new spider using the following command:
+
+```bash
+otelemuye create-spider --template template/sitemap --spider-name <YourSpiderName> --language <Language>
+```
+
+## Contribution
+
+* You will require a development installation in order to contribute a Spider to this repository. See [Installation](#🎬-installation)
+
+* To contribute new crawlers, extend `otelemuye.SitemapSpider` or `otelemuye.Spider` and provide concrete implementations of the abstract methods.
 
 * You will also need to provide a template config file in [config/](config). Your filename should be name of the spider class you created e.g. `legitng.yaml` is the config file for `LegitNGSpider`.
 
