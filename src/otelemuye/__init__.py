@@ -1,3 +1,3 @@
 from .process import CustomCrawlerProcess as CrawlerProcess
-from .spiders._base import CustomSitemapSpider
-from .spiders._base import CustomSpider
+from .spiders._base import CustomSitemapSpider as SitemapSpider
+from .spiders._base import CustomSpider as Spider

@@ -51,7 +51,7 @@ class TukoSpider(CustomSpider):
                     None, None, None
                 ))
             return next_url
- 
+
     def _get_article_urls(self, soup: BeautifulSoup) -> List[str]:
         all_urls = [urlparse(a.get("href")) for a in soup.find_all("a")]
         article_urls = [
