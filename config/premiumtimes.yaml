@@ -21,7 +21,8 @@ sitemap_urls:
 
 custom_settings:
   JOBDIR: "crawls/hausa_premiumtimes"
-  CONCURRENT_REQUESTS: 2
+  CONCURRENT_REQUESTS: 1
+  CLOSESPIDER_ITEMCOUNT: 20
   OUTPUT_FILE: "data/hausa_premiumtimes.jsonl"
   ITEM_PIPELINES:
     otelemuye.pipelines.JsonWriterPipeline: 300

@@ -2,9 +2,10 @@ sitemap_urls:
   - "http://atelewo.org/post-sitemap.xml"
 
 custom_settings:
-  ROBOTSTXT_OBEY: false
+  ROBOTSTXT_OBEY: true
   JOBDIR: "crawls/atelewo_spider"
-  CONCURRENT_REQUESTS: 32
+  CONCURRENT_REQUESTS: 1
+  CLOSESPIDER_ITEMCOUNT: 20
   OUTPUT_FILE: "data/atelewoorg.jsonl"
   ITEM_PIPELINES:
     otelemuye.pipelines.JsonWriterPipeline: 300
