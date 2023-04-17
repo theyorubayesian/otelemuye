@@ -8,6 +8,12 @@ from urllib.parse import urlunparse
 
 from bs4 import BeautifulSoup
 from scrapy.http.response import Response
+{% if cookiecutter.use_selenium == "true" -%}
+from scrapy import Request
+from scrapy.http.response import Response
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
+{%- endif %}
 
 from ._base import ArticleData
 from ._base import CustomSpider
@@ -38,4 +44,16 @@ class {{cookiecutter.spider_name|capitalize}}Spider(CustomSpider):
         article_urls = [# TODO]
         
         return article_urls
+
+    {% if cookiecutter.use_selenium == "true" -%}
+    def _make_selenium_request(self, response: Response) -> Request:
+        yield SeleniumRequest(
+            url=response.url, 
+            callback=self.parse,
+            dont_filter=True,
+            wait_time=      # TODO
+            wait_until=     # TODO
+        )
+    {%- endif %}
+
 
