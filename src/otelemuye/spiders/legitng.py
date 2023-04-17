@@ -9,7 +9,6 @@ from selenium.webdriver.support import expected_conditions as EC
 
 from ._base import ArticleData
 from ._base import CustomSitemapSpider
-from otelemuye.item import Article
 from otelemuye.middlewares import SeleniumRequest
 
 logger = logging.getLogger(__name__)

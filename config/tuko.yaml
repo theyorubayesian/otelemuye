@@ -11,9 +11,10 @@ start_urls:
   - https://kiswahili.tuko.co.ke/familia/
 
 custom_settings:
-  ROBOTSTXT_OBEY: false
+  ROBOTSTXT_OBEY: true
   JOBDIR: "crawls/tuko"
-  CONCURRENT_REQUESTS: 32
+  CONCURRENT_REQUESTS: 1
+  CLOSESPIDER_ITEMCOUNT: 20
   OUTPUT_FILE: "data/tuko_swahili.jsonl"
   ITEM_PIPELINES:
     otelemuye.pipelines.JsonWriterPipeline: 300

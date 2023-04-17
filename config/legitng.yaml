@@ -6,7 +6,8 @@ custom_settings:
   SELENIUM_DRIVER_EXECUTABLE_PATH: "/Users/theyorubayesian/Downloads/chromedriver"
   JOBDIR: "crawls/new_legitng_spider"
   RESTART_INDICATOR: "legitng.restart"
-  CONCURRENT_REQUESTS: 4
+  CONCURRENT_REQUESTS: 1
+  CLOSESPIDER_ITEMCOUNT: 20
   OUTPUT_FILE: "data/new_legitng_english.jsonl"
   DOWNLOADER_MIDDLEWARES:
     otelemuye.middlewares.SeleniumMiddleware: 543
