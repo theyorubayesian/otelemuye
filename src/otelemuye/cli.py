@@ -122,8 +122,9 @@ def main():
             src = Path(tmpdir).glob("**/*.*")
 
             for f in src:
-                copy2(f, dest[f.suffix])
-                logging.info(f"Created {f.name} in {dest[f.suffix]}")
+                f_ = Path(dest[f.suffix], f.name.lower())
+                copy2(f, f_.as_posix())
+                logging.info(f"Created {f_.name} in {dest[f.suffix]}")
 
     # TODO: Run multiple spiders
     if args.command == "run-till-complete":
