@@ -1,0 +1,18 @@
+start_urls:
+  -
+
+custom_settings:
+  ROBOTSTXT_OBEY: false
+  JOBDIR: "crawls/{{cookiecutter.spider_name|lower}}"
+  CONCURRENT_REQUESTS: 32
+  OUTPUT_FILE: "data/{{cookiecutter.spider_name|lower}}_{{cookiecutter.language}}.jsonl"
+  ITEM_PIPELINES:
+    otelemuye.pipelines.JsonWriterPipeline: 300
+  
+  {% if cookiecutter.use_selenium == "true" %}
+  RESTART_INDICATOR: "{{cookiecutter.spider_name|lower}}.restart"
+  SELENIUM_DRIVER_NAME: {{cookiecutter.selenium_driver_name}}
+  SELENIUM_DRIVER_EXECUTABLE_PATH: {{cookiecutter.selenium_driver_path}}
+  DOWNLOADER_MIDDLEWARES:
+    otelemuye.middlewares.SeleniumMiddleware: 543
+  {% endif %}
