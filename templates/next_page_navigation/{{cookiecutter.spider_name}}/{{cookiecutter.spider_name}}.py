@@ -24,6 +24,9 @@ logger = logging.getLogger(__name__)
 
 class {{cookiecutter.spider_name|capitalize}}Spider(CustomSpider):
     name = "{{ cookiecutter.spider_name|lower }}_spider"
+    {% if cookiecutter.use_selenium == "true" -%}
+    sitemap_rules = [("", "_make_selenium_request")]
+    {%- endif %}
 
     def _get_article_data(self, soup: BeautifulSoup) -> ArticleData:
         headline =          # TODO
